@@ -15,6 +15,7 @@ namespace DOTS.Data {
 
         public int numberTombstonesToSpawn => _graveyardData.ValueRO.numberTombstoneToSpawn;
         public Entity tombstonePrefab => _graveyardData.ValueRO.tombstonePrefab;
+        public Entity zombiePrefab => _graveyardData.ValueRO.zombiePrefab;
         public LocalTransform transform => _transform.ValueRO;
         
         public bool ZombieSpawnPointInitialized()
@@ -59,6 +60,20 @@ namespace DOTS.Data {
             set => _zombieSpawnTimer.ValueRW.value = value;
         }
 
-        public bool TimeToSpawnZombie => zombieSpawnTimer < 0f;
+        public bool timeToSpawnZombie => zombieSpawnTimer < 0f;
+        public float zombieSpawnRate => _graveyardData.ValueRO.zombieSpawnRate;
+
+        public LocalTransform GetZombieSpawnPoint() {
+            return new LocalTransform {
+                Position = GetRandomZombieSpawnPoint(),
+                Rotation = quaternion.identity,
+                Scale = 1f
+            };
+        }
+
+        float3 GetRandomZombieSpawnPoint() {
+            return _zombieSpawnPoints.ValueRO.value.Value.Value[
+                _graveyardRandom.ValueRW.value.NextInt(ZombieSpawnPointCount)];
+        }
     }
 }
